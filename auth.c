@@ -27,6 +27,7 @@
 #include <errno.h>
 
 #include "auth.h"
+#include "options.h"
 #include "util.h"
 
 static void get_pw(userinfo_t *uinfo) {
@@ -44,6 +45,13 @@ static void get_pw(userinfo_t *uinfo) {
 }
 
 void get_user(userinfo_t *uinfo, int vt) {
+
+	// stop the usual get-current-user logic.
+	if (options->root_pw_only) {
+		get_root(uinfo);
+		return;
+	}
+
 	FILE *uf;
 	struct utmp r;
 	char tty[16], name[UT_NAMESIZE+1];
